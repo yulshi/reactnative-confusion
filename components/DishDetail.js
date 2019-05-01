@@ -1,16 +1,14 @@
 import React from 'react'
 import { ScrollView, View, Text, FlatList } from 'react-native'
 import { Card, Icon } from 'react-native-elements';
-import { DISHES } from '../shared/dishes';
-import { COMMENTS } from '../shared/comments'
+import { connect } from 'react-redux';
+import { baseUrl } from '../shared/baseUrl';
 
-export default class DishDetail extends React.Component {
+class DishDetail extends React.Component {
 
     constructor(props) {
         super(props);
         this.state = {
-            dishes: DISHES,
-            comments: COMMENTS,
             favorates: []
         }
     }
@@ -29,7 +27,7 @@ export default class DishDetail extends React.Component {
 
         const dishId = this.props.navigation.getParam("dishId", "");
 
-        const dish = this.state.dishes[+dishId];
+        const dish = this.props.dishes.dishes[+dishId];
 
         if (dish == null) {
             return (<View></View>);
@@ -40,7 +38,7 @@ export default class DishDetail extends React.Component {
                         favorate={this.state.favorates.some(id => id === dishId)}
                         handleFavorate={this.handleFavorate} />
                     <RenderComments
-                        comments={this.state.comments.filter(comment => comment.dishId === dishId)} />
+                        comments={this.props.comments.comments.filter(comment => comment.dishId === dishId)} />
                 </ScrollView>
             )
         }
@@ -51,7 +49,7 @@ function RenderDishDetail({ dish, favorate, handleFavorate }) {
 
     return (
         <Card featuredTitle={dish.name}
-            image={require('./images/uthappizza.png')}>
+            image={{uri: baseUrl + dish.image}}>
             <Text style={{ margin: 10 }}>
                 {dish.description}
             </Text>
@@ -86,3 +84,10 @@ function RenderComments({ comments }) {
     );
 
 }
+
+const mapStateToProps = (state) => ({
+    dishes: state.dishes,
+    comments: state.comments
+})
+
+export default connect(mapStateToProps)(DishDetail);

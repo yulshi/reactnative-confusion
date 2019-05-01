@@ -1,5 +1,45 @@
 import React, { Component } from 'react'
-import { View, Text } from 'react-native'
+import { ScrollView, Text, FlatList } from 'react-native'
+import { Card, ListItem } from 'react-native-elements';
+import { connect } from 'react-redux';
+import { baseUrl } from '../shared/baseUrl'
+
+function RenderHistory() {
+    return (
+        <Card title="Our History">
+            <Text>
+                Started in 2010...
+            </Text>
+        </Card>
+    );
+}
+
+const renderLeaders = ({ item, index }) => {
+    return (
+        <ListItem
+            key={index}
+            title={item.name}
+            subtitle={item.description}
+            chevron={false}
+            leftAvatar={{ source: { uri: baseUrl + item.image } }} />
+    );
+}
+
+function RenderLeaderShip({ leaders }) {
+    return (
+        <Card title="Corporate Leadership">
+            <FlatList
+                data={leaders}
+                renderItem={renderLeaders}
+                keyExtractor={leader => leader.id.toString()} />
+        </Card>
+    );
+
+}
+
+const mapStateToProps = (state) => ({
+    leaders: state.leaders
+})
 
 export class About extends Component {
 
@@ -10,11 +50,12 @@ export class About extends Component {
 
     render() {
         return (
-            <View>
-                <Text>About Us</Text>
-            </View>
+            <ScrollView>
+                <RenderHistory />
+                <RenderLeaderShip leaders={this.props.leaders.leaders} />
+            </ScrollView>
         )
     }
 }
 
-export default About
+export default connect(mapStateToProps)(About);
