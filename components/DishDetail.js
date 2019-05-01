@@ -27,7 +27,6 @@ export default class DishDetail extends React.Component {
 
     render() {
 
-        console.log(this.state)
         const dishId = this.props.navigation.getParam("dishId", "");
 
         const dish = this.state.dishes[+dishId];
