@@ -3,6 +3,7 @@ import { ScrollView, Text, FlatList } from 'react-native'
 import { Card, ListItem } from 'react-native-elements';
 import { connect } from 'react-redux';
 import { baseUrl } from '../shared/baseUrl'
+import Loading from './Loading';
 
 function RenderHistory() {
     return (
@@ -25,13 +26,20 @@ const renderLeaders = ({ item, index }) => {
     );
 }
 
-function RenderLeaderShip({ leaders }) {
+function RenderLeaderShip({ leaders, isLoading, errMess }) {
     return (
         <Card title="Corporate Leadership">
-            <FlatList
-                data={leaders}
-                renderItem={renderLeaders}
-                keyExtractor={leader => leader.id.toString()} />
+            {isLoading ?
+                <Loading />
+                :
+                errMess ?
+                    <Text style={{color: "red"}}>{errMess}</Text>
+                    :
+                    <FlatList
+                        data={leaders}
+                        renderItem={renderLeaders}
+                        keyExtractor={leader => leader.id.toString()} />
+            }
         </Card>
     );
 
@@ -49,10 +57,14 @@ export class About extends Component {
     }
 
     render() {
+
         return (
             <ScrollView>
                 <RenderHistory />
-                <RenderLeaderShip leaders={this.props.leaders.leaders} />
+                <RenderLeaderShip
+                    leaders={this.props.leaders.leaders}
+                    isLoading={this.props.leaders.isLoading}
+                    errMess={this.props.leaders.errMess} />
             </ScrollView>
         )
     }
