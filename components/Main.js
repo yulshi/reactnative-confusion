@@ -16,6 +16,7 @@ import { Icon } from 'react-native-elements'
 import { connect } from 'react-redux';
 import { fetchDishes, fetchComments, fetchPromos, fetchLeaders } from '../redux/ActionCreators'
 import { Reservation } from './Reservation';
+import Favorites from './Favorites'
 
 const MenuNavigator = createStackNavigator(
     {
@@ -33,6 +34,35 @@ const MenuNavigator = createStackNavigator(
     },
     {
         initialRouteName: 'Menu',
+        navigationOptions: {
+            headerStyle: {
+                backgroundColor: '#512DA8'
+            },
+            headerTintColor: '#fff',
+            headerTitleStyle: {
+                color: '#fff'
+            }
+        }
+    }
+)
+
+const FavoritesNavigator = createStackNavigator(
+    {
+        Favorites: {
+            screen: Favorites,
+            navigationOptions: ({ navigation }) => ({
+                headerLeft: <Icon
+                    name="heart"
+                    type="font-awesome"
+                    size={24}
+                    color="white"
+                    onPress={() => navigation.toggleDrawer()} />
+            })
+        },
+        DishDetail: { screen: DishDetail }
+    },
+    {
+        initialRouteName: 'Favorites',
         navigationOptions: {
             headerStyle: {
                 backgroundColor: '#512DA8'
@@ -146,7 +176,7 @@ const ReservationNavigator = createStackNavigator(
             headerTintColor: "#fff"
         }
     }
-)
+);
 
 const CustomDrawerContentComponent = (props) => {
     return (
@@ -169,6 +199,7 @@ const CustomDrawerContentComponent = (props) => {
         </ScrollView>
     )
 };
+
 
 const MainNavigator = createDrawerNavigator(
     {
@@ -230,6 +261,22 @@ const MainNavigator = createDrawerNavigator(
                         color={tintColor}
                     />
                 )
+            }
+        },
+        Favorites:
+        {
+            screen: FavoritesNavigator,
+            navigationOptions: {
+                title: 'My Favorites',
+                drawerLabel: 'My Favorites',
+                drawerIcon: ({ tintColor, focused }) => (
+                    <Icon
+                        name='heart'
+                        type='font-awesome'
+                        size={24}
+                        iconStyle={{ color: tintColor }}
+                    />
+                ),
             }
         },
         Reservation: {

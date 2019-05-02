@@ -1,6 +1,6 @@
 import * as ActionTypes from './ActionTypes';
 
-export const favorates = (state = [], action) => {
+export const favorites = (state = [], action) => {
 
     switch(action.type) {
         case ActionTypes.ADD_FAVORATE:

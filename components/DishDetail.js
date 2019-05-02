@@ -58,7 +58,7 @@ class DishDetail extends React.Component {
                 <ScrollView>
                     <RenderDishDetail
                         dish={dish}
-                        favorate={this.props.favorates.some(id => id === dishId)}
+                        favorite={this.props.favorites.some(id => id === dishId)}
                         handleFavorate={this.handleFavorate}
                         toggleCommentModal={this.toggleCommentModal} />
                     <RenderComments
@@ -85,7 +85,6 @@ class DishDetail extends React.Component {
                             <View style={styles.modalControl}>
                                 <TextInput
                                     style={styles.modalTextInput}
-
                                     value={this.state.comment}
                                     onChangeText={(text) => { this.setState({ comment: text }) }}
                                     placeholder="please leave your comment" />
@@ -131,7 +130,7 @@ const styles = StyleSheet.create({
     }
 });
 
-function RenderDishDetail({ dish, favorate, handleFavorate, toggleCommentModal }) {
+function RenderDishDetail({ dish, favorite, handleFavorate, toggleCommentModal }) {
 
     return (
         <Card featuredTitle={dish.name}
@@ -141,7 +140,7 @@ function RenderDishDetail({ dish, favorate, handleFavorate, toggleCommentModal }
             </Text>
             <View style={{ flex: 1, flexDirection: "row", justifyContent: "center" }}>
                 <Icon
-                    name={favorate ? 'heart' : 'heart-o'}
+                    name={favorite ? 'heart' : 'heart-o'}
                     raised
                     reverse
                     size={16}
@@ -188,7 +187,7 @@ function RenderComments({ comments }) {
 const mapStateToProps = (state) => ({
     dishes: state.dishes,
     comments: state.comments,
-    favorates: state.favorates
+    favorites: state.favorites
 })
 
 const mapDispatchToProps = (dispatch) => ({
