@@ -15,6 +15,7 @@ import {
 import { Icon } from 'react-native-elements'
 import { connect } from 'react-redux';
 import { fetchDishes, fetchComments, fetchPromos, fetchLeaders } from '../redux/ActionCreators'
+import { Reservation } from './Reservation';
 
 const MenuNavigator = createStackNavigator(
     {
@@ -121,6 +122,32 @@ const AboutNavigator = createStackNavigator(
     }
 )
 
+const ReservationNavigator = createStackNavigator(
+    {
+        Reservation: {
+            screen: Reservation,
+            navigationOptions: ({ navigation }) => ({
+                headerLeft: <Icon
+                    name="cutlery"
+                    type="font-awesome"
+                    color="white"
+                    size={24}
+                    onPress={() => navigation.toggleDrawer()} />
+            })
+        }
+    }, {
+        navigationOptions: {
+            headerStyle: {
+                backgroundColor: "#512DA8"
+            },
+            headerTitleStyle: {
+                color: "#fff"
+            },
+            headerTintColor: "#fff"
+        }
+    }
+)
+
 const CustomDrawerContentComponent = (props) => {
     return (
         <ScrollView>
@@ -204,8 +231,22 @@ const MainNavigator = createDrawerNavigator(
                     />
                 )
             }
+        },
+        Reservation: {
+            screen: ReservationNavigator,
+            navigationOptions: {
+                title: "Reserve Tables",
+                drawerLabel: "Reserve Tables",
+                drawerIcon: ({ tintColor, focused }) => (
+                    <Icon
+                        name='cutlery'
+                        type='font-awesome'
+                        size={24}
+                        color={tintColor}
+                    />
+                )
+            }
         }
-
     },
     {
         drawerBackgroundColor: "#D1C4E9",
