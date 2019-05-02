@@ -6,10 +6,11 @@ import {
     StyleSheet,
     Picker,
     Switch,
-    Button
+    Button,
+    Modal
 } from 'react-native';
 import DatePicker from 'react-native-datepicker';
-
+import { Card } from 'react-native-elements'
 
 export class Reservation extends Component {
 
@@ -18,7 +19,8 @@ export class Reservation extends Component {
         this.state = {
             guests: 1,
             smoking: false,
-            date: ''
+            date: '',
+            showModal: false
         }
     }
 
@@ -26,8 +28,20 @@ export class Reservation extends Component {
         title: "Reserve Tables"
     }
 
+    toggleModal = () => {
+        this.setState({ showModal: !this.state.showModal })
+    }
+
     handleReservation = () => {
-        console.log(JSON.stringify(this.state));
+        this.toggleModal();
+    }
+
+    handleCloseModal = () => {
+        this.toggleModal();
+        this.resetForm();
+    }
+
+    resetForm = () => {
         this.setState({
             guests: 1,
             smoking: false,
@@ -90,6 +104,23 @@ export class Reservation extends Component {
                         color="#512DA8"
                         onPress={this.handleReservation} />
                 </View>
+                <Modal
+                    visible={this.state.showModal}
+                    transparent={false}>
+                    <Card
+                        style={styles.modal}
+                        title="Your Reservation"
+                        titleStyle={styles.modalTitle}>
+                        <Text style={styles.modalText}>Number of Guest: {this.state.guests}</Text>
+                        <Text style={styles.modalText}>Smoking?: {this.state.smoking ? "Yes" : "No"}</Text>
+                        <Text style={styles.modalText}>Date: {this.state.date}</Text>
+                        <Button
+                            onPress={this.handleCloseModal}
+                            title="Close"
+                            color="#512DA8"
+                        />
+                    </Card>
+                </Modal>
             </ScrollView>
         )
     }
@@ -109,6 +140,23 @@ const styles = StyleSheet.create({
     },
     formItem: {
         flex: 1
+    },
+    modal: {
+        alignItems: "center",
+        justifyContent: "center",
+        margin: 20
+    },
+    modalTitle: {
+        fontSize: 24,
+        fontWeight: 'bold',
+        backgroundColor: '#512DA8',
+        textAlign: 'center',
+        color: 'white',
+        marginBottom: 20
+    },
+    modalText: {
+        fontSize: 18,
+        margin: 10
     }
 });
 
