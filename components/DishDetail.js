@@ -3,24 +3,16 @@ import { ScrollView, View, Text, FlatList } from 'react-native'
 import { Card, Icon } from 'react-native-elements';
 import { connect } from 'react-redux';
 import { baseUrl } from '../shared/baseUrl';
+import { postFavorate } from '../redux/ActionCreators';
 
 class DishDetail extends React.Component {
-
-    constructor(props) {
-        super(props);
-        this.state = {
-            favorates: []
-        }
-    }
 
     static navigationOptions = {
         title: "Dish Details"
     }
 
     handleFavorate = (dishId) => () => {
-        this.setState({
-            favorates: this.state.favorates.concat(dishId)
-        });
+        this.props.postFavorate(dishId);
     }
 
     render() {
@@ -35,7 +27,7 @@ class DishDetail extends React.Component {
             return (
                 <ScrollView>
                     <RenderDishDetail dish={dish}
-                        favorate={this.state.favorates.some(id => id === dishId)}
+                        favorate={this.props.favorates.some(id => id === dishId)}
                         handleFavorate={this.handleFavorate} />
                     <RenderComments
                         comments={this.props.comments.comments.filter(comment => comment.dishId === dishId)} />
@@ -49,7 +41,7 @@ function RenderDishDetail({ dish, favorate, handleFavorate }) {
 
     return (
         <Card featuredTitle={dish.name}
-            image={{uri: baseUrl + dish.image}}>
+            image={{ uri: baseUrl + dish.image }}>
             <Text style={{ margin: 10 }}>
                 {dish.description}
             </Text>
@@ -87,7 +79,12 @@ function RenderComments({ comments }) {
 
 const mapStateToProps = (state) => ({
     dishes: state.dishes,
-    comments: state.comments
+    comments: state.comments,
+    favorates: state.favorates
 })
 
-export default connect(mapStateToProps)(DishDetail);
+const mapDispatchToProps = (dispatch) => ({
+    postFavorate: (dishId) => dispatch(postFavorate(dishId))
+})
+
+export default connect(mapStateToProps, mapDispatchToProps)(DishDetail);
