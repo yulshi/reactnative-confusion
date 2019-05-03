@@ -45,6 +45,8 @@ class DishDetail extends React.Component {
         });
     }
 
+    handleViewRef = ref => this.view = ref;
+
     render() {
 
         const dishId = this.props.navigation.getParam("dishId", "");
@@ -58,6 +60,11 @@ class DishDetail extends React.Component {
         const panResponder = PanResponder.create({
             onStartShouldSetPanResponder: (e, gestrueState) => {
                 return true;
+            },
+            onPanResponderGrant: () => {
+                this.view.rubberBand(1000).then(
+                    endState => console.log(endState ? "finished" : "cancelled")
+                )
             },
             onPanResponderEnd: (e, gestrueState) => {
                 if (recognizeDrag(gestrueState)) {
@@ -91,6 +98,7 @@ class DishDetail extends React.Component {
                         animation="fadeInDown"
                         duration={2000}
                         delay={100}
+                        ref={this.handleViewRef}
                         {...panResponder.panHandlers}>
                         <RenderDishDetail
                             dish={dish}
