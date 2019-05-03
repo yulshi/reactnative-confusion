@@ -12,3 +12,4 @@ export const ADD_LEADERS = 'ADD_LEADERS';
 export const LEADERS_FAILED = 'LEADERS_FAILED';
 export const POST_FAVORATE = 'POST_FAVORATE';
 export const ADD_FAVORATE = 'ADD_FAVORATE';
+export const DELETE_FAVORITE = 'DELETE_FAVORITE';

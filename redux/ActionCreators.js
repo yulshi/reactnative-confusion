@@ -193,5 +193,10 @@ export const addFavorate = (dishId) => ({
 })
 
 export const postFavorate = (dishId) => (dispatch) => {
-    setTimeout(() => dispatch(addFavorate(dishId)), 1000);
+    setTimeout(() => dispatch(addFavorate(dishId)), 100);
 }
+
+export const deleteFavorite = (dishId) => ({
+    type: ActionTypes.DELETE_FAVORITE,
+    payload: dishId
+});
