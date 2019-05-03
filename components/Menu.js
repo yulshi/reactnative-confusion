@@ -4,6 +4,7 @@ import { ListItem } from 'react-native-elements';
 import { connect } from 'react-redux'
 import { baseUrl } from '../shared/baseUrl';
 import Loading from './Loading';
+import * as Animatable from 'react-native-animatable';
 
 const mapStateToProps = (state) => ({
     dishes: state.dishes
@@ -21,12 +22,16 @@ class Menu extends Component {
 
         const renderMenuItem = ({ item, index }) => {
             return (
-                <ListItem key={index}
-                    title={item.name}
-                    subtitle={item.description}
-                    chevron={false}
-                    leftAvatar={{ source: { uri: baseUrl + item.image } }}
-                    onPress={() => navigate("DishDetail", { dishId: item.id })} />
+                <Animatable.View
+                    animation={index % 2 == 0 ? "fadeInRightBig" : "fadeInLeftBig"}
+                    duration={2000}>
+                    <ListItem key={index}
+                        title={item.name}
+                        subtitle={item.description}
+                        chevron={false}
+                        leftAvatar={{ source: { uri: baseUrl + item.image } }}
+                        onPress={() => navigate("DishDetail", { dishId: item.id })} />
+                </Animatable.View>
             );
         }
 

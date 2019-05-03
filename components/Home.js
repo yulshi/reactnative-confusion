@@ -4,6 +4,7 @@ import { Card } from 'react-native-elements';
 import { connect } from 'react-redux'
 import { baseUrl } from '../shared/baseUrl'
 import Loading from './Loading';
+import * as Animatable from 'react-native-animatable';
 
 function RenderItem({ item, isLoading, errMess }) {
     return (
@@ -13,13 +14,15 @@ function RenderItem({ item, isLoading, errMess }) {
             errMess ?
                 <Text style={{ color: "red" }}>{errMsg}</Text>
                 :
-                <Card featuredTitle={item.name}
-                    featuredSubtitle={item.designation}
-                    image={{ uri: baseUrl + item.image }}>
-                    <Text style={{ margin: 10 }}>
-                        {item.description}
-                    </Text>
-                </Card>
+                <Animatable.View animation="fadeInLeft" duration={2000} delay={200}>
+                    <Card featuredTitle={item.name}
+                        featuredSubtitle={item.designation}
+                        image={{ uri: baseUrl + item.image }}>
+                        <Text style={{ margin: 10 }}>
+                            {item.description}
+                        </Text>
+                    </Card>
+                </Animatable.View>
     );
 }
 

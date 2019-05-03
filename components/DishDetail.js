@@ -9,6 +9,7 @@ import { Card, Icon, Rating } from 'react-native-elements';
 import { connect } from 'react-redux';
 import { baseUrl } from '../shared/baseUrl';
 import { postFavorate, postComment } from '../redux/ActionCreators';
+import * as Animatable from 'react-native-animatable';
 
 class DishDetail extends React.Component {
 
@@ -56,13 +57,17 @@ class DishDetail extends React.Component {
         } else {
             return (
                 <ScrollView>
-                    <RenderDishDetail
-                        dish={dish}
-                        favorite={this.props.favorites.some(id => id === dishId)}
-                        handleFavorate={this.handleFavorate}
-                        toggleCommentModal={this.toggleCommentModal} />
-                    <RenderComments
-                        comments={this.props.comments.comments.filter(comment => comment.dishId === dishId)} />
+                    <Animatable.View animation="fadeInDown" duration={2000} delay={100} >
+                        <RenderDishDetail
+                            dish={dish}
+                            favorite={this.props.favorites.some(id => id === dishId)}
+                            handleFavorate={this.handleFavorate}
+                            toggleCommentModal={this.toggleCommentModal} />
+                    </Animatable.View>
+                    <Animatable.View animation="fadeInUp" duration={2000} delay={100} >
+                        <RenderComments
+                            comments={this.props.comments.comments.filter(comment => comment.dishId === dishId)} />
+                    </Animatable.View>
                     <Modal visible={this.state.showCommentModal}>
                         <ScrollView
                             contentContainerStyle={{ justifyContent: "center" }}

@@ -4,6 +4,7 @@ import { Card, ListItem } from 'react-native-elements';
 import { connect } from 'react-redux';
 import { baseUrl } from '../shared/baseUrl'
 import Loading from './Loading';
+import * as Animatable from 'react-native-animatable'
 
 function RenderHistory() {
     return (
@@ -33,7 +34,7 @@ function RenderLeaderShip({ leaders, isLoading, errMess }) {
                 <Loading />
                 :
                 errMess ?
-                    <Text style={{color: "red"}}>{errMess}</Text>
+                    <Text style={{ color: "red" }}>{errMess}</Text>
                     :
                     <FlatList
                         data={leaders}
@@ -60,11 +61,13 @@ export class About extends Component {
 
         return (
             <ScrollView>
-                <RenderHistory />
-                <RenderLeaderShip
-                    leaders={this.props.leaders.leaders}
-                    isLoading={this.props.leaders.isLoading}
-                    errMess={this.props.leaders.errMess} />
+                <Animatable.View animation="fadeInUp" duration={2000} delay={100}>
+                    <RenderHistory />
+                    <RenderLeaderShip
+                        leaders={this.props.leaders.leaders}
+                        isLoading={this.props.leaders.isLoading}
+                        errMess={this.props.leaders.errMess} />
+                </Animatable.View>
             </ScrollView>
         )
     }
