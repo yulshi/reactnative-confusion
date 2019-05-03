@@ -1,9 +1,8 @@
 import React from 'react'
 import {
-    ScrollView,
-    View,
-    Text,
-    FlatList, Modal, Button, TextInput, StyleSheet
+    ScrollView, View, Text, Alert,
+    FlatList, Modal, Button, TextInput, StyleSheet,
+    PanResponder
 } from 'react-native'
 import { Card, Icon, Rating } from 'react-native-elements';
 import { connect } from 'react-redux';
@@ -49,15 +48,50 @@ class DishDetail extends React.Component {
     render() {
 
         const dishId = this.props.navigation.getParam("dishId", "");
-
         const dish = this.props.dishes.dishes[+dishId];
+
+        const recognizeDrag = ({ moveX, moveY, dx, dy }) => {
+            console.log(moveX, moveY, dx, dy);
+            return dx < -50 ? true : false;
+        }
+
+        const panResponder = PanResponder.create({
+            onStartShouldSetPanResponder: (e, gestrueState) => {
+                return true;
+            },
+            onPanResponderEnd: (e, gestrueState) => {
+                if (recognizeDrag(gestrueState)) {
+                    Alert.alert(
+                        "Add to Favorite",
+                        `Are your sure you wish to add ${dish.name} to your favorite?`,
+                        [
+                            {
+                                text: "Cancel",
+                                type: "cancel"
+                            },
+                            {
+                                text: "OK",
+                                onPress: this.handleFavorate(dishId)
+                            }
+                        ],
+                        { cancelable: false }
+                    )
+                }
+                return true;
+            }
+        });
+
 
         if (dish == null) {
             return (<View></View>);
         } else {
             return (
                 <ScrollView>
-                    <Animatable.View animation="fadeInDown" duration={2000} delay={100} >
+                    <Animatable.View
+                        animation="fadeInDown"
+                        duration={2000}
+                        delay={100}
+                        {...panResponder.panHandlers}>
                         <RenderDishDetail
                             dish={dish}
                             favorite={this.props.favorites.some(id => id === dishId)}
@@ -69,44 +103,46 @@ class DishDetail extends React.Component {
                             comments={this.props.comments.comments.filter(comment => comment.dishId === dishId)} />
                     </Animatable.View>
                     <Modal visible={this.state.showCommentModal}>
-                        <ScrollView
-                            contentContainerStyle={{ justifyContent: "center" }}
-                            style={{ paddingTop: 50 }}>
-                            <Rating
-                                type="star"
-                                showRating={true}
-                                ratingCount={5}
-                                startingValue={this.state.rating}
-                                minValue={0}
-                                imageSize={28}
-                                onFinishRating={(val) => { this.setState({ rating: val }) }} />
-                            <View style={styles.modalControl}>
-                                <TextInput
-                                    style={styles.modalTextInput}
-                                    value={this.state.author}
-                                    onChangeText={(text) => { this.setState({ author: text }) }}
-                                    placeholder="please enter your name" />
-                            </View>
-                            <View style={styles.modalControl}>
-                                <TextInput
-                                    style={styles.modalTextInput}
-                                    value={this.state.comment}
-                                    onChangeText={(text) => { this.setState({ comment: text }) }}
-                                    placeholder="please leave your comment" />
-                            </View>
-                            <View style={styles.modalButtonContaner}>
-                                <Button
-                                    style={styles.modalButton}
-                                    title="Close"
-                                    color="grey"
-                                    onPress={this.toggleCommentModal} />
-                                <Button
-                                    style={styles.modalButton}
-                                    title="Submit"
-                                    color="blue"
-                                    onPress={this.handleSubmitComment(dishId)} />
-                            </View>
-                        </ScrollView>
+                        <Animatable.View animation="fadeInUp" duration={2000} delay={100} >
+                            <ScrollView
+                                contentContainerStyle={{ justifyContent: "center" }}
+                                style={{ paddingTop: 50 }}>
+                                <Rating
+                                    type="star"
+                                    showRating={true}
+                                    ratingCount={5}
+                                    startingValue={this.state.rating}
+                                    minValue={0}
+                                    imageSize={28}
+                                    onFinishRating={(val) => { this.setState({ rating: val }) }} />
+                                <View style={styles.modalControl}>
+                                    <TextInput
+                                        style={styles.modalTextInput}
+                                        value={this.state.author}
+                                        onChangeText={(text) => { this.setState({ author: text }) }}
+                                        placeholder="please enter your name" />
+                                </View>
+                                <View style={styles.modalControl}>
+                                    <TextInput
+                                        style={styles.modalTextInput}
+                                        value={this.state.comment}
+                                        onChangeText={(text) => { this.setState({ comment: text }) }}
+                                        placeholder="please leave your comment" />
+                                </View>
+                                <View style={styles.modalButtonContaner}>
+                                    <Button
+                                        style={styles.modalButton}
+                                        title="Close"
+                                        color="grey"
+                                        onPress={this.toggleCommentModal} />
+                                    <Button
+                                        style={styles.modalButton}
+                                        title="Submit"
+                                        color="blue"
+                                        onPress={this.handleSubmitComment(dishId)} />
+                                </View>
+                            </ScrollView>
+                        </Animatable.View>
                     </Modal>
                 </ScrollView>
             )
@@ -166,6 +202,16 @@ function RenderDishDetail({ dish, favorite, handleFavorate, toggleCommentModal }
 function RenderComments({ comments }) {
 
     const renderCommentItem = ({ item, index }) => {
+
+        const formater = new Intl.DateTimeFormat('en-US', {
+            year: 'numeric',
+            month: 'short',
+            day: '2-digit',
+        });
+
+        let date = new Date(Date.parse(item.date));
+        date = formater.format(date);
+
         return (
             <View key={index} style={{ flex: 1, alignItems: "flex-start", margin: 10 }}>
                 <Text style={{ fontSize: 14, paddingBottom: 5 }}>{item.comment}</Text>
@@ -174,7 +220,7 @@ function RenderComments({ comments }) {
                         <Icon key={index} name="star" type="font-awesome" color="gold" size={10} />
                     )}
                 </View>
-                <Text style={{ fontSize: 12, paddingTop: 5 }}>{'-- ' + item.author + ', ' + item.date} </Text>
+                <Text style={{ fontSize: 12, paddingTop: 5 }}>{'-- ' + item.author + ', ' + date} </Text>
             </View>
         );
     };
