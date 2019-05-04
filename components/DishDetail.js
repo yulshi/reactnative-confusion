@@ -2,7 +2,7 @@ import React from 'react'
 import {
     ScrollView, View, Text, Alert,
     FlatList, Modal, Button, StyleSheet,
-    PanResponder
+    PanResponder, Share
 } from 'react-native'
 import { Card, Icon, Rating, Input } from 'react-native-elements';
 import { connect } from 'react-redux';
@@ -43,6 +43,19 @@ class DishDetail extends React.Component {
             author: '',
             comment: ''
         });
+    }
+
+    shareDish = (title, message, url) => () => {
+        Share.share(
+            {
+                title: title,
+                message: title + ': ' + message + ' ' + url,
+                url: url
+            }, {
+                dialogTitle: 'Share ' + title
+            }).then(shareAction => {
+                console.log(shareAction.action);
+            })
     }
 
     handleViewRef = ref => this.view = ref;
@@ -104,7 +117,8 @@ class DishDetail extends React.Component {
                             dish={dish}
                             favorite={this.props.favorites.some(id => id === dishId)}
                             handleFavorate={this.handleFavorate}
-                            toggleCommentModal={this.toggleCommentModal} />
+                            toggleCommentModal={this.toggleCommentModal}
+                            shareDish={this.shareDish} />
                     </Animatable.View>
                     <Animatable.View animation="fadeInUp" duration={2000} delay={100} >
                         <RenderComments
@@ -177,7 +191,7 @@ const styles = StyleSheet.create({
     }
 });
 
-function RenderDishDetail({ dish, favorite, handleFavorate, toggleCommentModal }) {
+function RenderDishDetail({ dish, favorite, handleFavorate, toggleCommentModal, shareDish }) {
 
     return (
         <Card featuredTitle={dish.name}
@@ -199,7 +213,16 @@ function RenderDishDetail({ dish, favorite, handleFavorate, toggleCommentModal }
                     reverse
                     size={16}
                     type="font-awesome"
+                    color="red"
                     onPress={toggleCommentModal} />
+                <Icon
+                    name="share"
+                    reverse
+                    size={16}
+                    type="font-awesome"
+                    color="red"
+                    onPress={shareDish(dish.name, dish.description, baseUrl + dish.image)}
+                />
             </View>
         </Card>
     );
