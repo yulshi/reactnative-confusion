@@ -7,10 +7,12 @@ import {
     Picker,
     Switch,
     Button,
-    Modal
+    Modal,
+    Alert
 } from 'react-native';
 import DatePicker from 'react-native-datepicker';
 import { Card } from 'react-native-elements'
+import { Permissions, Notifications } from 'expo';
 
 export class Reservation extends Component {
 
@@ -28,11 +30,41 @@ export class Reservation extends Component {
         title: "Reserve Tables"
     }
 
+    async obtainNotificationPermission() {
+        let permission = await Permissions.getAsync(Permissions.USER_FACING_NOTIFICATIONS);
+        if (permission.status != "granted") {
+            permission = await Permissions.askAsync(Permissions.USER_FACING_NOTIFICATIONS);
+            if (permission.status != "granted") {
+                Alert.alert("Permissions are not granted to show notifications");
+            }
+        }
+        return permission;
+    }
+
+    async presentNotification(date) {
+        await this.obtainNotificationPermission();
+        Notifications.presentLocalNotificationAsync({
+            title: "Your Reservation",
+            body: `Reservation for ${date} was just requested`,
+            ios: {
+                sound: true
+            },
+            andriod: {
+                sound: true,
+                vibrate: true,
+                color: "green"
+            }
+        }).then(id => {
+            console.log(id);
+        })
+    }
+
     toggleModal = () => {
         this.setState({ showModal: !this.state.showModal })
     }
 
     handleReservation = () => {
+        this.presentNotification(this.state.date);
         this.toggleModal();
     }
 
