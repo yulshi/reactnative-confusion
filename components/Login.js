@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
-import { View, StyleSheet, Text, ScrollView, Image } from 'react-native';
+import { View, StyleSheet, Text, ScrollView, Image, Alert } from 'react-native';
 import { Input, CheckBox, Button, Icon } from 'react-native-elements';
-import { SecureStore, Permissions, ImagePicker } from 'expo';
+import { SecureStore, Permissions, ImagePicker, ImageManipulator, Asset } from 'expo';
 import { createBottomTabNavigator } from 'react-navigation';
 import { baseUrl } from '../shared/baseUrl';
 
@@ -57,14 +57,16 @@ class LoginTab extends Component {
             <View style={styles.container}>
                 <Input
                     placeholder="Username"
-                    leftIcon={{ type: 'font-awesome', name: 'user-o' }}
+                    leftIcon={{ type: 'font-awesome', name: 'user-o', size: 18 }}
+                    leftIconContainerStyle={{ paddingRight: 5 }}
                     onChangeText={(username) => this.setState({ username })}
                     value={this.state.username}
                     containerStyle={styles.formInput}
                 />
                 <Input
                     placeholder="Password"
-                    leftIcon={{ type: 'font-awesome', name: 'key' }}
+                    leftIcon={{ type: 'font-awesome', name: 'key', size: 18 }}
+                    leftIconContainerStyle={{ paddingRight: 5 }}
                     onChangeText={(password) => this.setState({ password })}
                     value={this.state.password}
                     containerStyle={styles.formInput}
@@ -142,12 +144,27 @@ class RegisterTab extends Component {
                 aspect: [4, 3],
             }).then(capturedImage => {
                 console.log(capturedImage);
-                this.setState({ imageUrl: capturedImage.uri });
+                if (!capturedImage.cancelled) {
+                    this.processImage(capturedImage.uri);
+                }
             }).catch(reason => {
-                console.log(reason);
+                Alert.alert("Camera", reason.message);
             });
         }
+    }
 
+    async processImage(imageUri) {
+        ImageManipulator.manipulateAsync(
+            imageUri,
+            [
+                { resize: { width: 400 } }
+            ],
+            { format: 'png' }
+        ).then(processedImage => {
+            this.setState({ imageUrl: processedImage.uri })
+        }).catch(err => {
+            console.log(err);
+        })
     }
 
     static navigationOptions = {
@@ -186,35 +203,40 @@ class RegisterTab extends Component {
                     </View>
                     <Input
                         placeholder="Username"
-                        leftIcon={{ type: 'font-awesome', name: 'user-o' }}
+                        leftIcon={{ type: 'font-awesome', name: 'user-o', size: 18 }}
+                        leftIconContainerStyle={{ paddingRight: 5 }}
                         onChangeText={(username) => this.setState({ username })}
                         value={this.state.username}
                         containerStyle={styles.formInput}
                     />
                     <Input
                         placeholder="Password"
-                        leftIcon={{ type: 'font-awesome', name: 'key' }}
+                        leftIcon={{ type: 'font-awesome', name: 'key', size: 18 }}
+                        leftIconContainerStyle={{ paddingRight: 5 }}
                         onChangeText={(password) => this.setState({ password })}
                         value={this.state.password}
                         containerStyle={styles.formInput}
                     />
                     <Input
                         placeholder="First Name"
-                        leftIcon={{ type: 'font-awesome', name: 'user-o' }}
-                        onChangeText={(lastname) => this.setState({ firstname })}
+                        leftIcon={{ type: 'font-awesome', name: 'user-o', size: 18 }}
+                        leftIconContainerStyle={{ paddingRight: 5 }}
+                        onChangeText={(firstname) => this.setState({ firstname })}
                         value={this.state.firstname}
                         containerStyle={styles.formInput}
                     />
                     <Input
                         placeholder="Last Name"
-                        leftIcon={{ type: 'font-awesome', name: 'user-o' }}
+                        leftIcon={{ type: 'font-awesome', name: 'user-o', size: 18 }}
+                        leftIconContainerStyle={{ paddingRight: 5 }}
                         onChangeText={(lastname) => this.setState({ lastname })}
                         value={this.state.lastname}
                         containerStyle={styles.formInput}
                     />
                     <Input
                         placeholder="Email"
-                        leftIcon={{ type: 'font-awesome', name: 'envelope-o' }}
+                        leftIcon={{ type: 'font-awesome', name: 'envelope-o', size: 18 }}
+                        leftIconContainerStyle={{ paddingRight: 5 }}
                         onChangeText={(email) => this.setState({ email })}
                         value={this.state.email}
                         containerStyle={styles.formInput}
@@ -275,14 +297,15 @@ const styles = StyleSheet.create({
     }
 });
 
-const Login = createBottomTabNavigator({
-    Login: LoginTab,
-    Register: RegisterTab
-}, {
+const Login = createBottomTabNavigator(
+    {
+        Login: LoginTab,
+        Register: RegisterTab
+    }, {
         tabBarOptions: {
             activeBackgroundColor: '#9575CD',
             inactiveBackgroundColor: '#D1C4E9',
-            activeTintColor: '#ffffff',
+            activeTintColor: 'white',
             inactiveTintColor: 'gray'
         }
     });
