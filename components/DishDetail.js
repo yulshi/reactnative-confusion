@@ -1,10 +1,10 @@
 import React from 'react'
 import {
     ScrollView, View, Text, Alert,
-    FlatList, Modal, Button, TextInput, StyleSheet,
+    FlatList, Modal, Button, StyleSheet,
     PanResponder
 } from 'react-native'
-import { Card, Icon, Rating } from 'react-native-elements';
+import { Card, Icon, Rating, Input } from 'react-native-elements';
 import { connect } from 'react-redux';
 import { baseUrl } from '../shared/baseUrl';
 import { postFavorate, postComment } from '../redux/ActionCreators';
@@ -110,47 +110,51 @@ class DishDetail extends React.Component {
                         <RenderComments
                             comments={this.props.comments.comments.filter(comment => comment.dishId === dishId)} />
                     </Animatable.View>
-                    <Modal visible={this.state.showCommentModal}>
-                        <Animatable.View animation="fadeInUp" duration={2000} delay={100} >
-                            <ScrollView
-                                contentContainerStyle={{ justifyContent: "center" }}
-                                style={{ paddingTop: 50 }}>
-                                <Rating
-                                    type="star"
-                                    showRating={true}
-                                    ratingCount={5}
-                                    startingValue={this.state.rating}
-                                    minValue={0}
-                                    imageSize={28}
-                                    onFinishRating={(val) => { this.setState({ rating: val }) }} />
-                                <View style={styles.modalControl}>
-                                    <TextInput
-                                        style={styles.modalTextInput}
-                                        value={this.state.author}
-                                        onChangeText={(text) => { this.setState({ author: text }) }}
-                                        placeholder="please enter your name" />
-                                </View>
-                                <View style={styles.modalControl}>
-                                    <TextInput
-                                        style={styles.modalTextInput}
-                                        value={this.state.comment}
-                                        onChangeText={(text) => { this.setState({ comment: text }) }}
-                                        placeholder="please leave your comment" />
-                                </View>
-                                <View style={styles.modalButtonContaner}>
-                                    <Button
-                                        style={styles.modalButton}
-                                        title="Close"
-                                        color="grey"
-                                        onPress={this.toggleCommentModal} />
-                                    <Button
-                                        style={styles.modalButton}
-                                        title="Submit"
-                                        color="blue"
-                                        onPress={this.handleSubmitComment(dishId)} />
-                                </View>
-                            </ScrollView>
-                        </Animatable.View>
+                    <Modal
+                        visible={this.state.showCommentModal}
+                        animationType="slide"
+                        animation="fadeInUp">
+                        <ScrollView
+                            contentContainerStyle={{ justifyContent: "center" }}
+                            style={{ paddingTop: 50 }}>
+                            <Rating
+                                type="star"
+                                showRating={true}
+                                ratingCount={5}
+                                startingValue={this.state.rating}
+                                minValue={0}
+                                imageSize={28}
+                                onFinishRating={(val) => { this.setState({ rating: val }) }} />
+                            <Input
+                                inputContainerStyle={styles.modalTextInput}
+                                value={this.state.author}
+                                onChangeText={(text) => { this.setState({ author: text }) }}
+                                placeholder="please enter your name"
+                                leftIcon={{ type: 'font-awesome', name: 'user-o', size: 18 }}
+                                leftIconContainerStyle={{ paddingRight: 5 }}
+                            />
+                            <Input
+                                inputContainerStyle={styles.modalTextInput}
+                                value={this.state.comment}
+                                onChangeText={(text) => { this.setState({ comment: text }) }}
+                                placeholder="please leave your comment"
+                                leftIcon={{ type: "font-awesome", name: "commenting-o", size: 18 }}
+                                leftIconContainerStyle={{ paddingRight: 5 }}
+                                multiline={true}
+                            />
+                            <View style={styles.modalButtonContaner}>
+                                <Button
+                                    style={styles.modalButton}
+                                    title="Close"
+                                    color="grey"
+                                    onPress={this.toggleCommentModal} />
+                                <Button
+                                    style={styles.modalButton}
+                                    title="Submit"
+                                    color="blue"
+                                    onPress={this.handleSubmitComment(dishId)} />
+                            </View>
+                        </ScrollView>
                     </Modal>
                 </ScrollView>
             )
@@ -159,14 +163,8 @@ class DishDetail extends React.Component {
 }
 
 const styles = StyleSheet.create({
-    modalControl: {
-        padding: 20,
-        justifyContent: "center"
-    },
     modalTextInput: {
-        borderStyle: "solid",
-        borderBottomWidth: 1,
-        borderBottomColor: "grey"
+        margin: 10
     },
     modalButtonContaner: {
         flex: 1,

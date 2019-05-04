@@ -17,6 +17,7 @@ import { connect } from 'react-redux';
 import { fetchDishes, fetchComments, fetchPromos, fetchLeaders } from '../redux/ActionCreators'
 import { Reservation } from './Reservation';
 import Favorites from './Favorites'
+import Login from './Login'
 
 const MenuNavigator = createStackNavigator(
     {
@@ -124,7 +125,33 @@ const ContactNavigator = createStackNavigator(
             headerTintColor: "#fff"
         }
     }
-)
+);
+
+const LoginNavigator = createStackNavigator(
+    {
+        Login: {
+            screen: Login,
+            navigationOptions: ({ navigation }) => ({
+                headerLeft: <Icon
+                    name="sign-in"
+                    type="font-awesome"
+                    color="white"
+                    size={24}
+                    onPress={() => navigation.toggleDrawer()} />
+            })
+        }
+    }, {
+        navigationOptions: {
+            headerStyle: {
+                backgroundColor: "#512DA8"
+            },
+            headerTitleStyle: {
+                color: "#fff"
+            },
+            headerTintColor: "#fff"
+        }
+    }
+);
 
 const AboutNavigator = createStackNavigator(
     {
@@ -203,6 +230,21 @@ const CustomDrawerContentComponent = (props) => {
 
 const MainNavigator = createDrawerNavigator(
     {
+        Login: {
+            screen: LoginNavigator,
+            navigationOptions: {
+                title: "Login",
+                drawerLabel: "Login",
+                drawerIcon: ({ tintColor, focused }) => (
+                    <Icon
+                        name='sign-in'
+                        type='font-awesome'
+                        size={24}
+                        color={tintColor}
+                    />
+                )
+            }
+        },
         Home: {
             screen: HomeNavigator,
             navigationOptions: {
@@ -296,6 +338,7 @@ const MainNavigator = createDrawerNavigator(
         }
     },
     {
+        initialRouteName: 'Home',
         drawerBackgroundColor: "#D1C4E9",
         contentComponent: CustomDrawerContentComponent
     }
