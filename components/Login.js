@@ -153,6 +153,23 @@ class RegisterTab extends Component {
         }
     }
 
+    getImageFromPicture = () => {
+        ImagePicker.launchImageLibraryAsync(
+            {
+                allowsEditing: true,
+                aspect: [4, 3]
+            }
+        ).then(capturedImage => {
+            console.log(capturedImage);
+            if (!capturedImage.cancelled) {
+                this.processImage(capturedImage.uri);
+            }
+        }).catch(reason => {
+            Alert.alert("Camera", reason.message);
+        });
+
+    }
+
     async processImage(imageUri) {
         ImageManipulator.manipulateAsync(
             imageUri,
@@ -196,10 +213,21 @@ class RegisterTab extends Component {
                             loadingIndicatorSource={require('./images/logo.png')}
                             style={styles.image}
                         />
-                        <Button
-                            title="Camera"
-                            onPress={this.getImageFromCamera}
-                        />
+                        <View style={{ flexDirection: "row" }}>
+                            <Icon
+                                name="camera"
+                                type="font-awesome"
+                                color="purple"
+                                onPress={this.getImageFromCamera}
+                                containerStyle={{ paddingRight: 5 }}
+                            />
+                            <Icon
+                                name="photo"
+                                type="font-awesome"
+                                color="purple"
+                                onPress={this.getImageFromPicture}
+                            />
+                        </View>
                     </View>
                     <Input
                         placeholder="Username"
@@ -278,6 +306,7 @@ const styles = StyleSheet.create({
     imageContainer: {
         flex: 1,
         flexDirection: 'row',
+        justifyContent: "space-between",
         margin: 20
     },
     image: {
