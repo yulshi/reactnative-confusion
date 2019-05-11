@@ -23,7 +23,11 @@
       "**/*"
     ],
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "bundleIdentifier": "com.coursea.confusion"
+    },
+    "android": {
+      "package": "com.coursea.confusion"
     }
   }
 }

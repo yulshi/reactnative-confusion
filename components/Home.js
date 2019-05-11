@@ -12,7 +12,7 @@ function RenderItem({ item, isLoading, errMess }) {
             <Loading />
             :
             errMess ?
-                <Text style={{ color: "red" }}>{errMsg}</Text>
+                <Text style={{ color: "red" }}>{errMess}</Text>
                 :
                 <Animatable.View animation="fadeInLeft" duration={2000} delay={200}>
                     <Card featuredTitle={item.name}
